@@ -5,56 +5,51 @@ plugins {
     id 'jacoco'
 }
 
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'jacoco'
+allprojects {
+    apply plugin: 'base'
+    apply plugin: 'jacoco'
 
-version = '0.0.1'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+    repositories {
+        jcenter()
+    }
+
+    jacoco {
+        toolVersion = '0.7.1.201405082137'
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    dependencies {
+        testCompile 'junit:junit:4.11'
+    }
+
+    jacocoTestReport {
+        reports {
+            html.enabled = true
+            xml.enabled = true
+            csv.enabled = false
+        }
+    }
+}
+
+task jacocoRootReport(type: org.gradle.testing.jacoco.tasks.JacocoReport) {
+    dependsOn = subprojects.test
+    sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories =  files(subprojects.sourceSets.main.output)
+    executionData = files(subprojects.jacocoTestReport.executionData)
+    reports {
+        html.enabled = true
+        xml.enabled = true
+        csv.enabled = false
+    }
+}
 
 // Establish version and status
 ext.githubProjectName = rootProject.name // Change if github project name is not the same as the root project's name
 group = "com.netflix.nfgraph"
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-
-    maven { url "http://repo1.maven.org/maven2/" }
-}
-
-
-
-subprojects {
-    dependencies {
-        testCompile 'junit:junit:4.11'
-    }z
-
-    test.useTestNG()
-}
-
-task codeCoverageReport(type: JacocoReport) {
-    executionData fileTree(project.rootDir.absolutePath).include("**/build/jacoco/*.exec")
-
-    subprojects.each {
-        sourceSets = it.sourceSets.main
-    }
-
-    reports {
-        xml.enabled = true
-        xml.destination = "${buildDir}/reports/jacoco/report.xml"
-        html.enabled = false
-        csv.enabled = false
-    }
-}
-
-codeCoverageReport.dependsOn {
-    subprojects*.test
-}
-
-check.dependsOn jacocoTestReport
 
 javadoc.includes << "**/NFGraph.java" << "**/NFBuildGraph.java" << "**/NFCompressedGraph.java" << "**/OrdinalSet.java" << "**/NFBuildGraphOrdinalSet.java" << "**/CompactOrdinalSet.java" << "**/HashSetOrdinalSet.java" << "**/BitSetOrdinalSet.java" << "**/OrdinalIterator.java" << "**/NFBuildGraphOrdinalIterator.java"<< "**/CompactOrdinalIterator.java" << "**/HashSetOrdinalIterator.java" << "**/BitSetOrdinalIterator.java" << "**/NFGraphSpec.java" << "**/NFNodeSpec.java" << "**/NFPropertySpec.java" << "**/OrdinalMap.java" << "**/NFGraphException.java"
  
