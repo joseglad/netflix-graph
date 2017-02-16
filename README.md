@@ -1,3 +1,6 @@
+[![codecov](https://codecov.io/gh/joseglad/netflix-graph/branch/master/graph/badge.svg)](https://codecov.io/gh/joseglad/netflix-graph)
+
+
 NetflixGraph
 ============
 
