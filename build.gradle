@@ -1,7 +1,16 @@
+
 plugins {
     id 'nebula.netflixoss' version '2.2.9'
     id 'java'
+    id 'jacoco'
 }
+
+apply plugin: 'java'
+apply plugin: 'jacoco'
+
+version = '0.0.1'
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 // Establish version and status
 ext.githubProjectName = rootProject.name // Change if github project name is not the same as the root project's name
@@ -14,6 +23,15 @@ repositories {
 dependencies {
     testCompile 'junit:junit:4.11'
 }
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+check.dependsOn jacocoTestReport
 
 javadoc.includes << "**/NFGraph.java" << "**/NFBuildGraph.java" << "**/NFCompressedGraph.java" << "**/OrdinalSet.java" << "**/NFBuildGraphOrdinalSet.java" << "**/CompactOrdinalSet.java" << "**/HashSetOrdinalSet.java" << "**/BitSetOrdinalSet.java" << "**/OrdinalIterator.java" << "**/NFBuildGraphOrdinalIterator.java"<< "**/CompactOrdinalIterator.java" << "**/HashSetOrdinalIterator.java" << "**/BitSetOrdinalIterator.java" << "**/NFGraphSpec.java" << "**/NFNodeSpec.java" << "**/NFPropertySpec.java" << "**/OrdinalMap.java" << "**/NFGraphException.java"
  
